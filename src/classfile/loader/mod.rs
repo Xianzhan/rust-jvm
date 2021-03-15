@@ -7,19 +7,17 @@ use std::path::Path;
 
 use entry::{ClassPathDirEntry, ClassPathEntry, ClassPathZipEntry};
 
+/// 从 path 构建 entry
+/// path: "." or "$JAVA_HOME/jre/lib"
 fn create_class_path_entry(path: &str) -> Box<dyn ClassPathEntry> {
     let p = Path::new(path);
     if p.is_dir() {
-        return Box::new(ClassPathDirEntry {
-            name: path.to_string(),
-        });
+        return Box::new(ClassPathDirEntry::new(path));
     }
 
     if let Some(ext) = p.extension() {
         if ext == "jar" || ext == "zip" {
-            return Box::new(ClassPathZipEntry {
-                name: path.to_string(),
-            });
+            return Box::new(ClassPathZipEntry::new(path));
         }
     }
 
